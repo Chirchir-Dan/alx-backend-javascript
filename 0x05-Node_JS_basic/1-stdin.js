@@ -1,25 +1,29 @@
 #!/usr/bin/env node
 
-// Display the welcome message
-console.log('Welcome to Holberton School, what is your name?');
+/**
+ * Prompt the user for their name, display it, and handle different input methods.
+ */
+function promptUser() {
+  console.log('Welcome to Holberton School, what is your name?');
 
-// Listen for user input
-process.stdin.on('data', (data) => {
-  const name = data.toString().trim(); // Remove trailing spaces or newlines
-  console.log(`Your name is: ${name}`);
-});
+  process.stdin.once('data', (data) => {
+    const name = data.toString().trim();
+    console.log(`Your name is: ${name}`);
 
-// Handle the end event for piped input
-process.stdin.on('end', () => {
-  console.log('This important software is now closing');
-});
+    if (!process.stdin.isTTY) {
+      console.log('This important software is now closing');
+    }
 
-// Handle process exit with a closing message
-process.on('SIGINT', () => {
-  console.log('This important software is now closing');
-  process.exit();
-});
+    process.exit(0); // Terminate the program
+  });
 
-// Export the module (not strictly necessary for this specific program,
-// but added for testing purposes as per requirements)
-module.exports = process;
+  process.stdin.resume();
+}
+
+// Export the function
+module.exports = promptUser;
+
+// Execute the function only if the file is run directly
+if (require.main === module) {
+  promptUser();
+}
