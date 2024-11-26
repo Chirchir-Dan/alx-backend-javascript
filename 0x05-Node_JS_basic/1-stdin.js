@@ -1,29 +1,22 @@
 #!/usr/bin/env node
 
-/**
- * Prompt the user for their name, display it, and handle different input methods.
- */
-function promptUser() {
-  console.log('Welcome to Holberton School, what is your name?');
+process.stdout.write('Welcome to Holberton School, what is your name?\n');
 
-  process.stdin.once('data', (data) => {
-    const name = data.toString().trim();
-    console.log(`Your name is: ${name}`);
+// Handle input when it's piped or entered interactively
+process.stdin.once('data', (chunk) => {
+  const name = chunk.toString().trim();
+  process.stdout.write(`Your name is: ${name}\n`);
 
-    if (!process.stdin.isTTY) {
-      console.log('This important software is now closing');
-    }
+  if (!process.stdin.isTTY) {
+    // Closing message for piped input
+    process.stdin.on('end', () => {
+      process.stdout.write('This important software is now closing\n');
+    });
+  } else {
+    // Exit immediately for interactive input
+    process.exit(0);
+  }
+});
 
-    process.exit(0); // Terminate the program
-  });
-
-  process.stdin.resume();
-}
-
-// Export the function
-module.exports = promptUser;
-
-// Execute the function only if the file is run directly
-if (require.main === module) {
-  promptUser();
-}
+// Resume stdin
+process.stdin.resume();
