@@ -1,7 +1,4 @@
-/**
- * Prints a string to the standard output.
- * @param {string} message - The message to display.
- */
+// 0-console.js
 function displayMessage(message) {
   console.log(message);
 }
