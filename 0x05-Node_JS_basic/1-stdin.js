@@ -2,21 +2,16 @@
 
 process.stdout.write('Welcome to Holberton School, what is your name?\n');
 
-// Handle input when it's piped or entered interactively
-process.stdin.once('data', (chunk) => {
-  const name = chunk.toString().trim();
-  process.stdout.write(`Your name is: ${name}\n`);
-
-  if (!process.stdin.isTTY) {
-    // Closing message for piped input
-    process.stdin.on('end', () => {
-      process.stdout.write('This important software is now closing\n');
-    });
-  } else {
-    // Exit immediately for interactive input
-    process.exit(0);
+process.stdin.on('readable', () => {
+  const chunk = process.stdin.read();
+  if (chunk) {
+    process.stdout.write(`Your name is: ${chunk.toString().trim()}\n`);
+    if (process.stdin.isTTY) {
+      process.exit(0); // Exit immediately for interactive input
+    }
   }
 });
 
-// Resume stdin
-process.stdin.resume();
+process.stdin.on('end', () => {
+  process.stdout.write('This important software is now closing\n');
+});
